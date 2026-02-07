@@ -39,3 +39,8 @@ jobs:
             ls -la
             cat file1.txt
             cat file2.txt
+
+        - name: checking pwd again
+          run: |
+            pwd
+            ls -la
