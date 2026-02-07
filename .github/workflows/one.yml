@@ -31,3 +31,11 @@ jobs:
             pwd
             ls -la
             cat index.html
+
+        - name: changing the directory
+          working-directory: ./projectfile
+          run: |
+            pwd
+            ls -la
+            cat file1.txt
+            cat file2.txt
