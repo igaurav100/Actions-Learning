@@ -1,0 +1,30 @@
+name: terraform
+
+on:
+    push:
+        branches:
+            - main
+    pull_request: 
+        branches: 
+            - main
+
+env:
+    TF_VERSION: 1.5.0
+
+jobs:
+    terraform:
+        name: Terraform
+        runs-on: ubuntu-latest
+
+        permissions: 
+            contents: read # Allows the workflow to read repository contents, necessary for actions/checkout@v3 to function properly
+            id-token: write # Allows the workflow to request an OIDC token, necessary for authentication with cloud providers
+            
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: checking the PWD
+          run: |
+            pwd
+            ls -la
