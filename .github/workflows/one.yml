@@ -18,9 +18,9 @@ jobs:
         name: Terraform
         runs-on: ubuntu-latest
 
-        # permissions: 
-        #     contents: read # Allows the workflow to read repository contents, necessary for actions/checkout@v3 to function properly
-        #     id-token: write # Scoped 'id-token: write' permission for Checkov action
+        permissions: 
+            contents: read # Allows the workflow to read repository contents, necessary for actions/checkout@v3 to function properly
+            id-token: write # Scoped 'id-token: write' permission for Checkov action
             
         steps:
         - name: Checkout code
@@ -45,9 +45,13 @@ jobs:
             pwd
             ls -la
             echo "terraform version is $TF_VERSION"
-
+            
         - name: Test with checkov
-          uses: bridgecrewio/checkov-action@v9
-
+          uses: bridgecrewio/checkov-action@master
+          with:
+            # checkov_version: ${{ env.CK_VERSION }}
+            directory: ./projectfile
+          
+          
         - name: Check checkov version
           run: checkov --version
