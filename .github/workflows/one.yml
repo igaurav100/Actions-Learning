@@ -47,7 +47,7 @@ jobs:
             echo "terraform version is $TF_VERSION" 
           
         - name: Install checkov
-          uses: bridgecrewio/checkov-action@v12.0.0
+          uses: bridgecrewio/checkov-action@v12
           with:
             checkov_version: ${{ env.TF_VERSION }} # This sets the version of Checkov to be installed, using the TF_VERSION environment variable defined at the workflow level. This allows for easy updates to the Checkov version by simply changing the TF_VERSION variable.
 
