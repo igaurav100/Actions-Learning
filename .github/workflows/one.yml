@@ -18,9 +18,9 @@ jobs:
         name: Terraform
         runs-on: ubuntu-latest
 
-        permissions: 
-            contents: read # Allows the workflow to read repository contents, necessary for actions/checkout@v3 to function properly
-            # id-token: write # Allows the workflow to request an OIDC token, necessary for authentication with cloud providers
+        # permissions: 
+        #     contents: read # Allows the workflow to read repository contents, necessary for actions/checkout@v3 to function properly
+        #     id-token: write # Scoped 'id-token: write' permission for Checkov action
             
         steps:
         - name: Checkout code
@@ -44,14 +44,10 @@ jobs:
           run: |
             pwd
             ls -la
-            echo "terraform version is $TF_VERSION" 
-          
-        - name: Install checkov
-          uses: bridgecrewio/checkov-action@v12
-          with:
-            output_format: cli,sarif # This sets the output format of Checkov to 'cli', which means that the results of the Checkov scan will be displayed in a command-line interface format in the workflow logs. This is useful for easily reading and understanding the scan results directly from the GitHub Actions logs.
-            output_file_path: console,results,sarif # This specifies the file paths where Checkov will save its output. The 'console' output will be saved to a file named 'console', the 'results' output will be saved to a file named 'results', and the 'sarif' output will be saved to a file named 'sarif'. This allows for easy access to the scan results in different formats for further analysis or integration with other tools.
-            # checkov_version: ${{ env.TF_VERSION }} # This sets the version of Checkov to be installed, using the TF_VERSION environment variable defined at the workflow level. This allows for easy updates to the Checkov version by simply changing the TF_VERSION variable.
+            echo "terraform version is $TF_VERSION"
 
-        - name: Run Checkov version
-          run: checkov --version # This command runs Checkov with the --version flag to display the installed version of Checkov, confirming that it has been installed correctly and is using the specified version.
+        - name: Test with checkov
+          uses: bridgecrewio/checkov-action@v9
+
+        - name: Check checkov version
+          run: checkov --version
