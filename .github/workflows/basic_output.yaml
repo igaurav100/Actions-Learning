@@ -1,0 +1,24 @@
+name: Basic Output
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-time: ${{ steps.timestamp.outputs.time }}
+      version: ${{ steps.set-version.outputs.version }}
+    steps:
+      - id: timestamp
+        run: echo "time=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+
+      - id: set-version
+        run: echo "version=1.2.3" >> $GITHUB_OUTPUT
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Build time: ${{ needs.build.outputs['build-time'] }}"
+      - run: echo "Version\: ${{ needs.build.outputs.version }}"
+      - name: Deploy with build outputs
+        run: |
+          echo "Deploying version ${{ needs.build.outputs.version }} built at ${{ needs.build.outputs['build-time'] }}"

@@ -1,0 +1,60 @@
+name: Multi-Dimension Test Pipeline
+on:
+  - push
+  - pull_request
+  - workflow_dispatch
+jobs:
+  multi-dimension-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+        django:
+          - '3.2'
+          - '4.0'
+          - '4.1'
+        database:
+          - sqlite
+          - postgresql
+          - mysql
+        # Exclude specific combinations if needed
+        exclude:
+          - django: '4.1'
+            python: '3.8' # Django 4.1 does not support Python 3.8
+          - database: 'mysql'
+            python: '3.11' # MySQL client may not support Python 3.11 yet
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install django==${{ matrix.django }}
+      - name: setup database
+        run: |
+          if [ "${{ matrix.database }}" == "postgresql" ]; then
+            sudo apt-get install postgresql postgresql-contrib
+            # Additional setup for PostgreSQL
+          elif [ "${{ matrix.database }}" == "mysql" ]; then
+            sudo apt-get install mysql-server
+            # Additional setup for MySQL
+          else
+            echo "Using SQLite, no additional setup needed."
+          fi
+      - name: Run tests
+        run: |
+          if [ "${{ matrix.database }}" == "postgresql" ]; then
+            export DATABASE_URL=postgresql://user:password@localhost:5432/testdb
+          elif [ "${{ matrix.database }}" == "mysql" ]; then
+            export DATABASE_URL=mysql://user:password@localhost:3306/testdb
+          else
+            export DATABASE_URL=sqlite:///db.sqlite3
+          fi
+          python manage.py test

@@ -1,0 +1,27 @@
+name: Dynamic Matrix Generation Using Output
+on: [push]
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latests
+    steps:
+        - run: |
+            MATRIX=$(cat <<EOF
+            {
+              "include": [
+                {"node-version": ["14", "16", "18"],
+                 "os": ["ubuntu-latest", "windows-latest",]
+              }
+            EOF
+            )
+            echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          id: create-matrix
+    outputs:
+      matrix: ${{ steps.create-matrix.outputs.matrix }}
+
+  test:
+    needs: generate-matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - run: echo "Testing on Node.js ${{ matrix.node-version }} on ${{ matrix.os }}"

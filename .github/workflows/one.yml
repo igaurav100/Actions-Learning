@@ -49,9 +49,7 @@ jobs:
         - name: Test with checkov
           uses: bridgecrewio/checkov-action@master
           with:
-            # checkov_version: ${{ env.CK_VERSION }}
-            directory: ./projectfile
-          
+            directory: ./projectfile          
           
         - name: Check checkov version
           run: checkov --version

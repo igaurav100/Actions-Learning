@@ -1,0 +1,21 @@
+# using matrix output in steps
+name: Matrix with output
+on: [push, pull_request, workflow_dispatch]
+jobs:
+    generate:
+        runs-on: ubuntu-latest
+        outputs:
+            matrix: ${{ steps.set-matrix.outputs.matrix }}
+        steps:
+            - name: Set matrix output
+              id: set-matrix
+              run: |
+                echo "matrix=$(cat matrix.json)" >> $GITHUB_OUTPUT
+              # Example matrix.json content: {"os": "ubuntu-latest", "node": "18"}
+    build:
+        needs: generate
+        runs-on: ubuntu-latest
+        strategy:
+            matrix: ${{ fromJson(needs.generate.outputs.matrix) }}
+        steps:
+            - run: echo "Building for version ${{ matrix.version }} on ${{ matrix.os }}"

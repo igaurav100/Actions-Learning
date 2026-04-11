@@ -1,0 +1,37 @@
+name: Conditional Outputs
+
+on: 
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    outputs:
+      needs-review: ${{ steps.check.outputs.needs-review }}
+      review-type: ${{ steps.check.outputs.review-type }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - id: check
+        run: |
+          # Check if files changed in critical directories
+          if git diff --name-only HEAD~1 | grep -E "src/(core|security)/"; then
+            echo "needs-review=true" >> $GITHUB_OUTPUT
+            echo "review-type=security" >> $GITHUB_OUTPUT
+          elif git diff --name-only HEAD~1 | grep -E "docs/"; then
+            echo "needs-review=false" >> $GITHUB_OUTPUT
+            echo "review-type=none" >> $GITHUB_OUTPUT
+          else
+            echo "needs-review=true" >> $GITHUB_OUTPUT
+            echo "review-type=standard" >> $GITHUB_OUTPUT
+          fi
+
+  request-review:
+    needs: analyze
+    if: needs.analyze.outputs.needs-review == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Requesting ${{ needs.analyze.outputs.review-type }} review"
