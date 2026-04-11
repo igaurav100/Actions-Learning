@@ -1,26 +1,15 @@
 name: Multi-Dimension Test Pipeline
-on:
-  - push
-  - pull_request
-  - workflow_dispatch
+on: workflow_dispatch
+# on: [push, pull_request, workflow_dispatch]
 jobs:
   multi-dimension-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python:
-          - '3.8'
-          - '3.9'
-          - '3.10'
-          - '3.11'
-        django:
-          - '3.2'
-          - '4.0'
-          - '4.1'
-        database:
-          - sqlite
-          - postgresql
-          - mysql
+        python: ['3.8', '3.9', '3.10', '3.11']
+        django: ['3.2', '4.0', '4.1']
+        database: ['sqlite', 'postgresql', 'mysql']
+
         # Exclude specific combinations if needed
         exclude:
           - django: '4.1'

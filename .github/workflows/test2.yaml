@@ -1,6 +1,7 @@
 # Github actions pipeline with matrix strategy. 
 name: Node.js CI with Matrix Strategy
-on: [push]
+on: workflow_dispatch
+# on: [push]
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -21,4 +22,3 @@ jobs:
             # check npm version
             - name: Check npm version
               run: npm --version
-              

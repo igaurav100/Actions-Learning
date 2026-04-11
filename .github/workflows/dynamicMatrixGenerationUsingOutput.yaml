@@ -1,5 +1,6 @@
 name: Dynamic Matrix Generation Using Output
-on: [push]
+on: workflow_dispatch
+# on: [push]
 jobs:
   generate-matrix:
     runs-on: ubuntu-latests

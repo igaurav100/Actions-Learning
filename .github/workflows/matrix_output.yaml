@@ -1,6 +1,7 @@
 # using matrix output in steps
 name: Matrix with output
-on: [push, pull_request, workflow_dispatch]
+on: workflow_dispatch
+# on: [push, pull_request, workflow_dispatch]
 jobs:
     generate:
         runs-on: ubuntu-latest

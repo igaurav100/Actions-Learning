@@ -1,18 +1,21 @@
-# Matrix Job in Github Actions
-name: Test Matrix Example
-on: [push, pull_request, workflow_dispatch]
+name: Test Matrix Pipeline
+on: workflow_dispatch
+# on: [push, pull_request, workflow_dispatch]
 jobs:
-    test:
-        runs-on: ${{ matrix.os }}
-        strategy:
-            matrix:
-                node-version: [14, 16, 18]
-                os: [ubuntu-latest, windows-latest, macos-latest]
-        steps:
-            - uses: actions/checkout@v2
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v2
-              with:
-                node-version: ${{ matrix.node-version }}
-            - run: npm install
-            - run: npm test
+  test-matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20, 22, 24]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test

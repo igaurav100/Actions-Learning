@@ -1,5 +1,21 @@
+# name: Conditional Matrix
+# on: [push, pull_request, workflow_dispatch]
+# jobs:
+#     test:
+#         runs-on: ubuntu-latest
+#         strategy:
+#             matrix:
+#                 browser: [chrome, firefox, edge, safari, opera, brave]
+#                 version: [latest, beta]
+#         if: ${{ !(matrix.browser == 'safari' && matrix.version == 'beta') }}
+#         steps:
+#             - uses: actions/checkout@v3
+#             - name: Run tests on ${{ matrix.browser }} ${{ matrix.version }}
+#               run: echo "Testing on ${{ matrix.browser }} version ${{ matrix.version }}"
+
 name: Conditional Matrix
-on: [push, pull_request, workflow_dispatch]
+on: workflow_dispatch
+# on: [push, pull_request, workflow_dispatch]
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -7,7 +23,9 @@ jobs:
             matrix:
                 browser: [chrome, firefox, edge, safari, opera, brave]
                 version: [latest, beta]
-        if: ${{ !(matrix.browser == 'safari' && matrix.version == 'beta') }}
+                exclude:
+                    - browser: safari
+                      version: beta
         steps:
             - uses: actions/checkout@v3
             - name: Run tests on ${{ matrix.browser }} ${{ matrix.version }}

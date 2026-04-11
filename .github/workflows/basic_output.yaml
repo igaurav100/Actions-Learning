@@ -1,5 +1,6 @@
 name: Basic Output
-on: [push]
+on: workflow_dispatch
+# on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,8 +18,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Build time: ${{ needs.build.outputs['build-time'] }}"
-      - run: echo "Version\: ${{ needs.build.outputs.version }}"
+      - run: |
+          echo "Build time: ${{ needs.build.outputs.build-time }}"
+      - run: |
+          echo "Version: ${{ needs.build.outputs.version }}"
       - name: Deploy with build outputs
         run: |
-          echo "Deploying version ${{ needs.build.outputs.version }} built at ${{ needs.build.outputs['build-time'] }}"
+          echo "Deploying version ${{ needs.build.outputs.version }} built at ${{ needs.build.outputs.build-time }}"

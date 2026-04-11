@@ -1,5 +1,6 @@
 name: multiple output
-on: [push]
+on: workflow_dispatch
+# on: [push]
 jobs:
   generate: # name of your choice
     runs-on: ubuntu-latest
@@ -8,18 +9,19 @@ jobs:
       version: ${{ steps.info.outputs.version }}
       hash: ${{ steps.info.outputs.hash }}
     
+    steps:
+      - id: info
+        run: |
+          echo "name=my-app" >> $GITHUB_OUTPUT
+          echo "version=1.0.0" >> $GITHUB_OUTPUT 
+          echo "hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+  use-outputs:
+      needs: generate
+      runs-on: ubuntu-latest
       steps:
-        - id: info
+        - name: Display outputs
           run: |
-            echo "name=my-app" >> $GITHUB_OUTPUT
-            echo "version=1.0.0" >> $GITHUB_OUTPUT 
-            echo "hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-    use-outputs:
-        needs: generate
-        runs-on: ubuntu-latest
-        steps:
-            - name: Display outputs
-              run: |
-                echo "Name: ${{ needs.generate.outputs.name }}"
-                echo "Version: ${{ needs.generate.outputs.version }}"
-                echo "Hash: ${{ needs.generate.outputs.hash }}"
+            echo "Name: ${{ needs.generate.outputs.name }}"
+            echo "Version: ${{ needs.generate.outputs.version }}"
+            echo "Hash: ${{ needs.generate.outputs.hash }}"
