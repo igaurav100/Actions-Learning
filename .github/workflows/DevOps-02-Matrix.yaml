@@ -1,5 +1,5 @@
 # Github actions pipeline with matrix strategy. 
-name: Node.js CI with Matrix Strategy
+name: Node.js CI with Matrix Strategy-02
 on: workflow_dispatch
 # on: [push]
 jobs:
